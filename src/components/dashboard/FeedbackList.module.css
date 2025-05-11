@@ -1,0 +1,41 @@
+
+/* src/components/Dashboard/FeedbackList.module.css */
+.feedbackList {
+    list-style: none;
+    padding: 0;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 10px; /* Espaço acima da lista */
+}
+
+.feedbackItem {
+    background-color: var(--color-gray-light);
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.feedbackDate {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-gray-dark);
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.feedbackLoading, .noFeedback {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: var(--color-gray-dark);
+    opacity: 0.8;
+}
+
+/* Ajustes responsivos se necessário */
+ @media (max-width: 600px) {
+    .feedbackItem {
+        font-size: 0.9rem;
+    }
+}

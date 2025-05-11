@@ -1,0 +1,130 @@
+
+.ratingContainer, .thankYouContainer {
+    background-color: var(--color-white);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 90%;
+    margin: 2rem auto;
+    text-align: center;
+  }
+  
+  .ratingContainer h1 {
+    color: var(--color-orange);
+    margin-bottom: 15px;
+    font-size: 1.8rem; /* Tamanho base para H1 */
+  }
+  .thankYouContainer h2 {
+     color: var(--color-orange);
+     margin-bottom: 15px;
+     font-size: 1.6rem; /* Tamanho base para H2 */
+  }
+  
+  .ratingContainer p, .thankYouContainer p {
+    margin-bottom: 20px;
+    color: var(--color-gray-dark);
+    font-size: 1rem; /* Tamanho base para parágrafos */
+  }
+  
+  .ratingForm {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-top: 30px;
+  }
+  
+  .question {
+    text-align: left;
+    border-top: 1px solid var(--color-gray-light);
+    padding-top: 20px;
+  }
+  
+  .question label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--color-gray-dark);
+    font-size: 1.05rem;
+  }
+  
+  .feedbackTextarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-gray-light);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 80px;
+    margin-top: 5px;
+  }
+  
+  .feedbackTextarea:focus {
+    outline: none;
+    border-color: var(--color-orange);
+    box-shadow: 0 0 5px var(--color-pulse-tertiary);
+  }
+  
+  .buttonContainer {
+      margin-top: 15px;
+      text-align: center;
+  }
+  
+  /* --- Media Queries para Responsividade --- */
+  
+  /* Telas Médias (Ex: Tablets pequenos, celulares grandes em paisagem) */
+  @media (max-width: 768px) {
+    .ratingContainer, .thankYouContainer {
+      padding: 25px 30px;
+      width: 90%;
+    }
+    .ratingContainer h1 {
+      font-size: 1.6rem;
+    }
+     .thankYouContainer h2 {
+      font-size: 1.4rem;
+    }
+    .ratingForm {
+      gap: 20px; /* Reduz o espaço entre perguntas */
+    }
+  }
+  
+  /* Telas Pequenas (Ex: Celulares em modo retrato) */
+  @media (max-width: 600px) {
+    .ratingContainer, .thankYouContainer {
+      padding: 20px 15px; /* Reduz padding lateral */
+      width: 95%; /* Ocupa mais da tela */
+      margin: 1rem auto; /* Reduz margem vertical */
+    }
+     .ratingContainer h1 {
+      font-size: 1.4rem;
+    }
+     .thankYouContainer h2 {
+      font-size: 1.3rem;
+    }
+     .ratingContainer p, .thankYouContainer p {
+       font-size: 0.95rem; /* Reduz um pouco a fonte do parágrafo */
+     }
+     .question label {
+         font-size: 1rem; /* Reduz fonte do label da pergunta */
+         margin-bottom: 8px;
+     }
+     .ratingForm {
+       margin-top: 20px;
+     }
+      .feedbackTextarea {
+         font-size: 0.95rem;
+         min-height: 70px;
+     }
+     .buttonContainer {
+        margin-top: 10px;
+     }
+  }
+  
+   /* Telas Muito Pequenas (Opcional) */
+   @media (max-width: 400px) {
+       .ratingContainer h1 {
+          font-size: 1.3rem;
+      }
+   }

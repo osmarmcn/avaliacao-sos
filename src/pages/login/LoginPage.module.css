@@ -1,0 +1,82 @@
+
+.loginPageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Usa menos que 100vh para não colar no topo/fundo */
+    padding: 20px; /* Espaçamento caso o conteúdo seja maior que a tela */
+  }
+  
+  .loginBox {
+    background-color: var(--color-white);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%; /* Ocupa a largura disponível até o max-width */
+    text-align: center;
+  }
+  
+  .loginBox h1 {
+    color: var(--color-orange); /* Mantem o padrão do H1 */
+    margin-bottom: 25px; /* Mais espaço abaixo do título */
+    font-size: 1.6rem;
+  }
+  
+  .errorMessage {
+    color: var(--color-red);
+    margin-bottom: 15px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    min-height: 1.2em; /* Garante espaço mesmo sem erro */
+  }
+  
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaço entre os grupos de input e botão */
+  }
+  
+  .inputGroup {
+    text-align: left; /* Alinha label e input à esquerda dentro do grupo */
+  }
+  
+  .label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--color-gray-dark);
+  }
+  
+  .input {
+    width: 100%;
+    padding: 10px 12px; /* Ajuste padding */
+    margin-bottom: 5px; /* Pequeno espaço abaixo do input */
+    border: 1px solid var(--color-gray-light);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: var(--color-orange);
+    box-shadow: 0 0 5px var(--color-pulse-tertiary);
+  }
+  
+  /* Estilo para fazer o botão ocupar 100% da largura */
+  .loginButton {
+     width: 100%;
+     margin-top: 10px; /* Espaço acima do botão */
+  }
+  
+  /* Ajustes responsivos, se necessário */
+  @media (max-width: 480px) {
+    .loginBox {
+      padding: 25px 20px;
+    }
+    .loginBox h1 {
+       font-size: 1.4rem;
+    }
+  }

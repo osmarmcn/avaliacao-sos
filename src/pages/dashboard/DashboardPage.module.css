@@ -1,0 +1,142 @@
+/* src/pages/dashboard/DashboardPage.module.css (AJUSTADO) */
+
+.dashboardContainer {
+  padding: 20px 30px;
+  max-width: 1200px;
+  margin: 1rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Espaço principal entre as seções */
+}
+
+/* --- Cabeçalho --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-gray-light);
+  padding-bottom: 15px;
+ /* margin-bottom removido, o gap do container cuida disso */
+}
+
+.header h1 {
+  color: var(--color-orange);
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.logoutButton {
+  /* Estilos SÓ se precisar sobrescrever o Button genérico */
+  /* padding: 8px 15px; */
+  /* font-size: 0.9rem; */
+}
+
+/* --- Containers das Seções --- */
+/* Estilo base comum para as seções (opcional, mas ajuda a reduzir repetição) */
+.dashboardSection {
+  background-color: var(--color-white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+/* Aplica estilo base e adiciona específicos se necessário */
+.periodSelector {
+  composes: dashboardSection; /* Herda estilos de .dashboardSection (se usar pré-processador ou PostCSS com compose) */
+  /* Ou copie os estilos de .dashboardSection aqui se não usar compose */
+  /* background-color: var(--color-white); ... etc */
+  padding-bottom: 15px; /* Mantém padding específico se necessário */
+}
+
+.statsGrid {
+  composes: dashboardSection;
+  display: grid;
+  /* Cria colunas responsivas */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  background-color: var(--color-gray-light); /* Fundo diferente para destacar os cards brancos */
+}
+
+.chartsArea {
+  composes: dashboardSection;
+  display: grid;
+   /* Cria colunas responsivas */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding-top: 10px;
+}
+
+.feedbackSection {
+  composes: dashboardSection;
+}
+
+/* Estilo específico para o H2 DENTRO da seção de feedback */
+.feedbackSection h2 {
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  color: var(--color-gray-dark);
+  border-top: 1px solid var(--color-gray-light);
+  padding-top: 20px;
+}
+
+/* --- Estados Globais da Página --- */
+.loading,
+.error {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+  color: var(--color-gray-dark);
+  /* Pode adicionar background, etc, se quiser destacar mais */
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  margin: 1rem 0; /* Adiciona margem vertical */
+}
+
+.error {
+  color: var(--color-red);
+  font-weight: 500;
+}
+
+/* --- Media Queries para Layout Geral --- */
+@media (max-width: 768px) {
+  .dashboardContainer {
+    padding: 15px;
+    gap: 20px;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+   .header h1 {
+     font-size: 1.5rem;
+   }
+   /* Ajusta layout das grids se necessário */
+   .statsGrid {
+       gap: 10px;
+       padding: 15px;
+   }
+   .chartsArea {
+        /* Força uma coluna */
+       grid-template-columns: 1fr;
+       gap: 15px;
+   }
+    .feedbackSection h2 {
+     font-size: 1.2rem;
+   }
+}
+
+@media (max-width: 480px) {
+    /* Ajusta a grade de stats para 2 colunas */
+    .statsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Estilos que foram MOVIDOS para os módulos dos componentes:
+  .periodSelector h3, .periodButtons, .periodButton, .activePeriod -> PeriodSelector.module.css
+  .statsCard, .statsLabel, .statsValue, .negativeNpsValue -> StatsCard.module.css
+  .chartContainer, .noChartData -> RatingChart.module.css
+  .feedbackList, .feedbackItem, .feedbackDate -> FeedbackList.module.css
+*/

@@ -1,0 +1,32 @@
+
+
+/* src/components/ui/Button/Button.module.css */
+.button {
+    background-color: var(--color-orange);
+    color: var(--color-white);
+    border: none;
+    padding: 12px 25px; /* Ajuste o padding conforme necessário */
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500; /* Poppins geralmente fica bem com 500 */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-block; /* Garante que se comporte bem no fluxo */
+    text-align: center;
+  }
+  
+  .button:hover {
+    background-color: var(--color-orange-bright);
+    transform: translateY(-2px);
+  }
+  
+  .button:active {
+    transform: translateY(0);
+  }
+  
+  .button:disabled {
+    background-color: var(--color-gray-light);
+    color: var(--color-gray-dark);
+    cursor: not-allowed;
+    transform: none;
+  }

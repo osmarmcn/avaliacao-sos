@@ -1,0 +1,71 @@
+
+.ratingScaleContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px; /* Levemente menor */
+    margin-top: 10px;
+  }
+  
+  .radioInput {
+    display: none;
+  }
+  
+  .ratingLabel {
+    cursor: pointer;
+    
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    text-align: center;
+  
+    /* Resto das propriedades de aparência */
+    width: 32px; /* Ou o tamanho que definimos para mobile */
+    height: 32px;
+    border: 2px solid var(--color-gray-light);
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 13px; /* Ou o tamanho que definimos para mobile */
+    color: var(--color-gray-dark);
+    background-color: var(--color-white);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+    user-select: none;
+  }
+  
+  .ratingLabel:hover {
+    background-color: var(--color-pulse-tertiary);
+    border-color: var(--color-orange);
+    transform: scale(1.1);
+  }
+  
+  .radioInput:checked + .ratingLabel {
+    background-color: var(--color-orange);
+    border-color: var(--color-orange-bright);
+    color: var(--color-white);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px var(--color-pulse-tertiary);
+  }
+  
+  /* Ajustes para telas menores */
+  @media (max-width: 600px) {
+    .ratingLabel {
+      width: 32px;  /* Pouco menor */
+      height: 32px;
+      font-size: 13px;
+    }
+    .ratingScaleContainer {
+       gap: 5px; /* Espaço ainda menor */
+    }
+  }
+  
+   /* Ajustes para telas muito pequenas (opcional) */
+   @media (max-width: 400px) {
+    .ratingLabel {
+      width: 30px;
+      height: 30px;
+      font-size: 12px;
+    }
+    .ratingScaleContainer {
+       gap: 4px;
+    }
+  }

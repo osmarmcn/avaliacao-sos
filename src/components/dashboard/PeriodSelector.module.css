@@ -1,0 +1,42 @@
+
+/* src/components/Dashboard/PeriodSelector.module.css */
+.periodSelectorContainer {
+    /* Estilos se precisar de um container específico, senão pode usar o da página */
+    padding-bottom: 15px;
+  }
+  
+  .periodSelectorContainer h3 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: var(--color-gray-dark);
+  }
+  
+  .periodButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  /* Estilo geral para botões de período */
+  .periodButton {
+      padding: 8px 15px !important; /* Usa !important se o Button genérico tiver padding forte */
+      font-size: 0.9rem !important;
+      border: 1px solid var(--color-gray-light) !important;
+      background-color: var(--color-white) !important;
+      color: var(--color-gray-dark) !important;
+      transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  }
+  
+  .periodButton:hover:not(.activePeriod):not(:disabled) {
+      background-color: var(--color-gray-light) !important;
+      border-color: var(--color-gray-dark) !important;
+  }
+  
+  /* Estilo para o botão de período ativo */
+  .periodButton.activePeriod {
+    background-color: var(--color-orange-bright) !important;
+    color: var(--color-white) !important;
+    border-color: var(--color-orange-bright) !important;
+    font-weight: bold;
+    box-shadow: 0 0 5px var(--color-pulse-tertiary);
+  }

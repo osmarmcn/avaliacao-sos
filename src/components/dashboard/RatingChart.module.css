@@ -1,0 +1,21 @@
+
+/* src/components/Dashboard/RatingChart.module.css */
+.chartContainer {
+    background-color: var(--color-white);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    position: relative; /* Necessário para Chart.js responsivo */
+    /* Controla altura/largura mínima/máxima aqui */
+    min-height: 300px;
+    /* max-height: 400px; */ /* Exemplo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+   .chartContainer p { /* Estilo para mensagem "Sem dados" */
+      font-style: italic;
+      color: var(--color-gray-dark);
+      opacity: 0.7;
+  }
