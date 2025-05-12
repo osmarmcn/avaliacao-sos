@@ -133,10 +133,3 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
-
-/* Estilos que foram MOVIDOS para os módulos dos componentes:
-  .periodSelector h3, .periodButtons, .periodButton, .activePeriod -> PeriodSelector.module.css
-  .statsCard, .statsLabel, .statsValue, .negativeNpsValue -> StatsCard.module.css
-  .chartContainer, .noChartData -> RatingChart.module.css
-  .feedbackList, .feedbackItem, .feedbackDate -> FeedbackList.module.css
-*/

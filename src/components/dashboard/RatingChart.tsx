@@ -5,7 +5,7 @@ import { ChartOptions, ChartData } from 'chart.js'; // Importa tipos
 import styles from './RatingChart.module.css';
 
 // Define o tipo BarChartData aqui ou importe de types/stats.ts
-type BarChartData = ChartData<'bar', number[], string>;
+export type BarChartData = ChartData<'bar', number[], string>;
 
 interface RatingChartProps {
   chartData: BarChartData;

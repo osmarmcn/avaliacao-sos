@@ -1,6 +1,12 @@
 
 import { Rating } from '../types/rating'; // Ajuste o caminho
 import { CalculatedStats } from '../types/stats'; // Ajuste o caminho
+import {
+  getISOWeek, getYear, getMonth, startOfMonth, format,
+  getWeek
+} from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
 
 // Exporta a função para ser usada em outros lugares
 export const calculateStatistics = (ratings: Rating[]): CalculatedStats => {
@@ -111,3 +117,120 @@ export const prepareDistributionData = (
         ],
     };
 };
+
+export interface GroupedPeriodStats {
+  label: string;         
+  periodKey: string;     
+  stats: CalculatedStats;
+}
+
+type TimeGroup = 'week' | 'month' | 'year';
+
+export function groupRatingsByPeriod(
+  ratings: Rating[],
+  groupBy: TimeGroup
+): GroupedPeriodStats[] {
+  const groups: Record<string, Rating[]> = {};
+  const labels: Record<string, string> = {};
+
+  ratings.forEach(rating => {
+    if (!rating.created_at_date) return;
+
+    const date = rating.created_at_date;
+    let key = '';
+    let label = '';
+
+    if (groupBy === 'week') {
+      const week = getISOWeek(date);
+      const year = getYear(date);
+      key = `${year}-W${week}`;
+      label = `Semana ${week}/${year}`;
+    } else if (groupBy === 'month') {
+      const month = getMonth(date) + 1;
+      const year = getYear(date);
+      key = `${year}-${month.toString().padStart(2, '0')}`;
+      label = format(startOfMonth(date), 'MMM/yyyy');
+    } else if (groupBy === 'year') {
+      const year = getYear(date);
+      key = `${year}`;
+      label = `${year}`;
+    }
+
+    if (!groups[key]) {
+      groups[key] = [];
+      labels[key] = label;
+    }
+
+    groups[key].push(rating);
+  });
+
+  const result: GroupedPeriodStats[] = Object.entries(groups).map(([key, group]) => ({
+    periodKey: key,
+    label: labels[key],
+    stats: calculateStatistics(group),
+  }));
+
+  // Ordena cronologicamente
+  return result.sort((a, b) => a.periodKey.localeCompare(b.periodKey));
+}
+
+export function prepareComparativeChart(
+  ratings: Rating[],
+  groupBy: 'week' | 'month' | 'year'
+): { data: BarChartData; best: string; worst: string } {
+  const groups = new Map<string, Rating[]>();
+
+  ratings.forEach((rating) => {
+    const date = rating.created_at_date!;
+    let key = '';
+
+    switch (groupBy) {
+      case 'week':
+        key = `Semana ${getWeek(date)} - ${format(date, 'yyyy')}`;
+        break;
+      case 'month':
+        key = format(date, 'MMM/yyyy', { locale: ptBR });
+        break;
+      case 'year':
+        key = format(date, 'yyyy');
+        break;
+    }
+
+    if (!groups.has(key)) {
+      groups.set(key, []);
+    }
+
+    groups.get(key)!.push(rating);
+  });
+
+  const averages: { key: string; avg: number }[] = [];
+
+  groups.forEach((list, key) => {
+    const sum = list.reduce((acc, r) => acc + (r.satisfaction || 0), 0);
+    const avg = list.length ? sum / list.length : 0;
+    averages.push({ key, avg: parseFloat(avg.toFixed(2)) });
+  });
+
+  const sorted = [...averages].sort((a, b) => b.avg - a.avg);
+  const best = sorted[0]?.key ?? '';
+  const worst = sorted[sorted.length - 1]?.key ?? '';
+
+  return {
+    data: {
+      labels: averages.map((d) => d.key),
+      datasets: [
+        {
+          label: 'Média de Satisfação',
+          data: averages.map((d) => d.avg),
+          backgroundColor: averages.map((d) => {
+            if (d.key === best) return '#4caf50'; // verde
+            if (d.key === worst) return '#f44336'; // vermelho
+            return '#2196f3'; // azul padrão
+          }),
+        },
+      ],
+    },
+    best,
+    worst,
+  };
+}

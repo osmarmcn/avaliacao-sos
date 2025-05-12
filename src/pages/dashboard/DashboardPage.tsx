@@ -1,33 +1,38 @@
 // src/pages/dashboard/DashboardPage.tsx (REFATORADO com Componentes)
 
-import React, { useState, useEffect, useCallback } from 'react';
+
+import { groupRatingsByPeriod } from '../../utils/statistics';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Supabase e Autenticação
 import { supabase } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
+import { prepareComparativeChart } from '../../utils/statistics';
 
 
 import { Rating } from '../../types/rating';
 import { CalculatedStats } from '../../types/stats';
 
-import { BarChartData } from '../../components/Dashboard/RatingChart'; 
+import { BarChartData } from '../../components/dashboard/RatingChart'; 
 
 
-import { calculateStatistics, prepareDistributionData } from '../../utils/statistics'; 
+import { calculateStatistics, prepareDistributionData, GroupedPeriodStats } from '../../utils/statistics'; 
 import Button from '../../components/ui/Button/Button';
-import PeriodSelector from '../../components/Dashboard/PeriodSelector'; 
-import StatsCard from '../../components/Dashboard/StatsCard';      
-import RatingChart from '../../components/Dashboard/RatingChart';     
-import FeedbackList from '../../components/Dashboard/FeedbackList';   
+import PeriodSelector from '../../components/dashboard/PeriodSelector'; 
+import StatsCard from '../../components/dashboard/StatsCard';      
+import RatingChart from '../../components/dashboard/RatingChart';     
+import FeedbackList from '../../components/dashboard/FeedbackList';   
 import styles from './DashboardPage.module.css';
 
 
 import {
   parseISO, isWithinInterval, startOfDay, endOfDay, startOfWeek, endOfWeek,
-  startOfMonth, endOfMonth, startOfYear, endOfYear,
+  startOfMonth, endOfMonth, startOfYear, endOfYear, Interval
 } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+// import ComparativeChart from '../../components/ComparativeChart/ComparativeChart';
 
 type TimePeriod = 'day' | 'week' | 'month' | 'year';
 
@@ -52,53 +57,84 @@ const DashboardPage: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [weeklyComparison, setWeeklyComparison] = useState<GroupedPeriodStats[]>([]);
+  const [monthlyComparison, setMonthlyComparison] = useState<GroupedPeriodStats[]>([]);
+  const [yearlyComparison, setYearlyComparison] = useState<GroupedPeriodStats[]>([]);
+
+
+
   
   useEffect(() => {
     const fetchAllRatings = async () => {
      
         setIsLoading(true); setError(null);
-        const { data, error: dbError } = await supabase.from('ratings').select('*').order('created_at', { ascending: false });
-        console.log("Supabase fetch response:", { data, dbError });
+        const { data, error: dbError } = await supabase.from('ratings').select('*').order('created_at', { ascending: false })
+        console.log("Supabase fetch response:", { data, dbError })
         if (dbError) { setError(`Erro: ${dbError.message}`); setAllRatings([]); }
         else if (data) {
-            const ratingsWithDateObjects = data.map(r => ({ ...r, created_at_date: r.created_at ? parseISO(r.created_at) : null }));
-            setAllRatings(ratingsWithDateObjects as Rating[]);
+            const ratingsWithDateObjects = data.map(r => ({ ...r, created_at_date: r.created_at ? parseISO(r.created_at) : null }))
+            setAllRatings(ratingsWithDateObjects as Rating[])
         } else { setAllRatings([]); }
-        setIsLoading(false);
+        setIsLoading(false)
     };
-    fetchAllRatings();
-  }, []);
+    fetchAllRatings()
+  }, [])
 
 
   useEffect(() => {
     if (isLoading || !allRatings) { setFilteredRatings([]); setStats(null); return; }
-    setIsProcessing(true);
+    setIsProcessing(true)
 
     
-    const now = new Date(); let interval: Interval;
-    switch (selectedPeriod) { /* ... cases ... */
-        case 'week': interval = { start: startOfWeek(now, { locale: ptBR }), end: endOfWeek(now, { locale: ptBR }) }; break;
-        case 'month': interval = { start: startOfMonth(now), end: endOfMonth(now) }; break;
-        case 'year': interval = { start: startOfYear(now), end: endOfYear(now) }; break;
-        case 'day': default: interval = { start: startOfDay(now), end: endOfDay(now) }; break;
+    const now = new Date(); let interval: Interval
+    switch (selectedPeriod) {
+        case 'week': interval = { start: startOfWeek(now, { locale: ptBR }), end: endOfWeek(now, { locale: ptBR }) }; break
+        case 'month': interval = { start: startOfMonth(now), end: endOfMonth(now) }; break
+        case 'year': interval = { start: startOfYear(now), end: endOfYear(now) }; break
+        case 'day': default: interval = { start: startOfDay(now), end: endOfDay(now) }; break
     }
 
   
     const filtered = allRatings.filter(rating =>
         rating.created_at_date && isWithinInterval(rating.created_at_date, interval)
     );
-    setFilteredRatings(filtered);
+    setFilteredRatings(filtered)
 
     
-    setStats(calculateStatistics(filtered));
+    setStats(calculateStatistics(filtered))
 
     
-    setSatisfactionChartData(prepareDistributionData(filtered, 'satisfaction'));
-    setRecommendationChartData(prepareDistributionData(filtered, 'recommendation'));
-    setSpeedChartData(prepareDistributionData(filtered, 'speed'));
+    setSatisfactionChartData(prepareDistributionData(filtered, 'satisfaction'))
+    setRecommendationChartData(prepareDistributionData(filtered, 'recommendation'))
+    setSpeedChartData(prepareDistributionData(filtered, 'speed'))
 
-    setIsProcessing(false);
-  }, [allRatings, selectedPeriod, isLoading]); // Dependências
+    const weekly = prepareComparativeChart(allRatings, 'week')
+    setWeeklyComparison(weekly.data)
+
+    const monthly = prepareComparativeChart(allRatings, 'month')
+    setMonthlyComparison(monthly.data)
+
+    const yearly = prepareComparativeChart(allRatings, 'year')
+    setYearlyComparison(yearly.data)
+
+    setWeeklyComparison(groupRatingsByPeriod(allRatings, 'week'))
+    setMonthlyComparison(groupRatingsByPeriod(allRatings, 'month'))
+    setYearlyComparison(groupRatingsByPeriod(allRatings, 'year'))
+
+    setIsProcessing(false)
+  }, [allRatings, selectedPeriod, isLoading])
+
+  useEffect(() => {
+  if (allRatings.length === 0) return;
+
+  const weekly = prepareComparativeChart(allRatings, 'week');
+  const monthly = prepareComparativeChart(allRatings, 'month');
+  const yearly = prepareComparativeChart(allRatings, 'year');
+
+  setWeeklyComparison(weekly);
+  setMonthlyComparison(monthly);
+  setYearlyComparison(yearly);
+}, [allRatings]);
 
   
   const handlePeriodChange = (period: TimePeriod) => { setSelectedPeriod(period); };
@@ -125,15 +161,15 @@ const DashboardPage: React.FC = () => {
   if (isLoading) { return <div className={styles.loading}>Carregando...</div>; }
   if (error) { return <div className={styles.error}>{error}</div>; }
 
-  console.log('--- RENDER DASHBOARD ---');
-    console.log('isLoading:', isLoading); // Estado de loading inicial
-    console.log('isProcessing:', isProcessing); // Estado de processamento/filtro
-    console.log('selectedPeriod:', selectedPeriod);
-    console.log('allRatings count:', allRatings.length);
+  console.log('--- RENDER DASHBOARD ---')
+    console.log('isLoading:', isLoading)
+    console.log('isProcessing:', isProcessing)
+    console.log('selectedPeriod:', selectedPeriod)
+    console.log('allRatings count:', allRatings.length)
     console.log('filteredRatings count:', filteredRatings.length);
-    console.log('filteredRatings data:', filteredRatings); // Mostra os dados filtrados
-    console.log('stats:', stats); // Mostra as estatísticas calculadas
-    console.log('satisfactionChartData:', satisfactionChartData); // Mostra os dados do gráfico
+    console.log('filteredRatings data:', filteredRatings)
+    console.log('stats:', stats)
+    console.log('satisfactionChartData:', satisfactionChartData)
 
   return (
     <div className={styles.dashboardContainer}>
@@ -183,6 +219,28 @@ const DashboardPage: React.FC = () => {
                <p className={styles.noChartData}>Sem dados para exibir gráficos neste período.</p>
           ) : null }
       </div>
+      {/* <div className={styles.chartsArea}>
+         
+          {!isProcessing && filteredRatings.length > 0 ? (
+            <>
+              <RatingChart chartData={satisfactionChartData} title="Distribuição de Satisfação" />
+              <RatingChart chartData={recommendationChartData} title="Distribuição de Recomendação (NPS)" />
+              <RatingChart chartData={speedChartData} title="Distribuição de Velocidade" />
+            </>
+          ) : !isProcessing ? (
+            <p className={styles.noChartData}>Sem dados para exibir gráficos neste período.</p>
+          ) : null}
+
+         
+          {!isProcessing && allRatings.length > 0 && (
+            <div className={styles.comparativeSection}>
+              <h2>Comparativos</h2>
+              <ComparativeChart data={weeklyComparison} title="Comparativo Semanal" />
+              <ComparativeChart data={monthlyComparison} title="Comparativo Mensal" />
+              <ComparativeChart data={yearlyComparison} title="Comparativo Anual" />
+            </div>
+          )}
+      </div> */}
 
       {/* Lista de Feedbacks (Componente) */}
       <div className={styles.feedbackSection}>
